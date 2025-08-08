@@ -20,5 +20,9 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.17.1"
   }
 }
