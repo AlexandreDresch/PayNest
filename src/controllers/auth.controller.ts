@@ -1,75 +1,59 @@
-import bcrypt from 'bcryptjs';
-import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
-
 import type { Request, Response, NextFunction } from 'express';
 
-import User from '../models/user.model.js';
-import config from '../config/config.js';
+import { AuthService } from '../services/auth.service.js';
 
-export const signUp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+export const AuthController = {
+  async signUp(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { username, email, password } = req.body;
 
-  try {
-    const { username, email, password } = req.body;
+      const result = await AuthService.signUp(username, email, password);
 
-    const existingUser = await mongoose
-      .model('User')
-      .findOne({ email })
-      .session(session);
-
-    if (existingUser) {
-      return res
-        .status(400)
-        .send({ title: 'Sign Up', message: 'User already exists!' });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUsers = await User.create(
-      [{ username, email, password: hashedPassword }],
-      { session },
-    );
-
-    if (!newUsers[0]) {
-      throw new Error('User creation failed');
-    }
-
-    const token = jwt.sign({ id: newUsers[0]._id }, config.jwtSecret, {
-      expiresIn: config.jwtExpiration,
-    });
-
-    await session.commitTransaction();
-    
-    res
-      .status(201)
-      .json({
+      res.status(201).json({
         success: true,
         message: 'User created successfully!',
-        data: { user: newUsers[0], token },
+        data: result,
       });
-  } catch (error) {
-    await session.abortTransaction();
-    next(error);
-  } finally {
-    session.endSession();
-  }
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async signIn(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res
+          .status(400)
+          .send({ title: 'Sign In', message: 'All fields are required!' });
+      }
+
+      const result = await AuthService.authenticateUser(email, password);
+
+      if (!result) {
+        return res
+          .status(400)
+          .send({ title: 'Sign In', message: 'Invalid email or password!' });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'User signed in successfully!',
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async signOut(req: Request, res: Response, next: NextFunction) {
+    try {
+      res
+        .status(200)
+        .json({ success: true, message: 'User signed out successfully!' });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
-
-export const signIn = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {};
-
-export const signOut = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {};
