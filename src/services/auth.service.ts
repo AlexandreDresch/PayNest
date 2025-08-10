@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import config from '../config/config.js';
 
-import { UserRepository } from '../repositories/auth.repository.js';
+import { AuthRepository } from '../repositories/auth.repository.js';
 
 export const AuthService = {
   async signUp(username: string, email: string, password: string) {
@@ -11,13 +11,13 @@ export const AuthService = {
       throw new Error('All fields are required!');
     }
 
-    const existingUser = await UserRepository.findUserByEmail(email);
+    const existingUser = await AuthRepository.findUserByEmail(email);
 
     if (existingUser) {
       throw new Error('User already exists!');
     }
 
-    const newUser = await UserRepository.createUser(username, email, password);
+    const newUser = await AuthRepository.createUser(username, email, password);
 
     const token = jwt.sign({ id: newUser._id }, config.jwtSecret, {
       expiresIn: config.jwtExpiration,
@@ -27,7 +27,7 @@ export const AuthService = {
   },
 
   async authenticateUser(email: string, password: string) {
-    const user = await UserRepository.findUserByEmail(email);
+    const user = await AuthRepository.findUserByEmail(email);
     if (!user) return null;
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -42,6 +42,6 @@ export const AuthService = {
   },
 
   async findUserByEmail(email: string) {
-    return await UserRepository.findUserByEmail(email);
+    return await AuthRepository.findUserByEmail(email);
   },
 };

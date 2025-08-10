@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 
 import User from '../models/user.model.js';
 
-export const UserRepository = {
+export const AuthRepository = {
   async findUserByEmail(email: string) {
     return await mongoose.model('User').findOne({ email });
   },

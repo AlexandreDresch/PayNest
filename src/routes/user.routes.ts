@@ -1,38 +1,27 @@
 import { Router } from 'express';
+import { get } from 'http';
+import { UserService } from '../services/user.service.js';
 
 const userRouter = Router();
 
-userRouter.get('/', (req, res) => {
-  res
-    .status(200)
-    .send({ title: 'GET all users', message: 'List of all users' });
-});
+userRouter.get('/', UserService.getAllUsers);
 
-userRouter.get('/:id', (req, res) => {
+userRouter.get('/:id', UserService.getUserById);
+
+userRouter.patch('/:id', (req, res) => {
   const userId = req.params.id;
-  res
-    .status(200)
-    .send({ title: `GET user ${userId}`, message: `Details of user ${userId}` });
-});
-
-userRouter.post('/', (req, res) => {
-  res
-    .status(201)
-    .send({ title: 'Create User', message: 'User created successfully!' });
-});
-
-userRouter.put('/:id', (req, res) => {
-  const userId = req.params.id;
-  res
-    .status(200)
-    .send({ title: `Update user ${userId}`, message: `User ${userId} updated successfully!` });
+  res.status(200).send({
+    title: `Update user ${userId}`,
+    message: `User ${userId} updated successfully!`,
+  });
 });
 
 userRouter.delete('/:id', (req, res) => {
   const userId = req.params.id;
-  res
-    .status(200)
-    .send({ title: `Delete user ${userId}`, message: `User ${userId} deleted successfully!` });
+  res.status(200).send({
+    title: `Delete user ${userId}`,
+    message: `User ${userId} deleted successfully!`,
+  });
 });
 
 export default userRouter;
