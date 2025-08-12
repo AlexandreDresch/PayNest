@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: `.env.${process.env.NODE_ENV || 'development'}.local` });
 
 interface Config {
   port: number;
@@ -8,6 +8,8 @@ interface Config {
   databaseUrl: string;
   jwtSecret: string;
   jwtExpiration: number;
+  arcjetKey: string;
+  arcjetEnv: string;
 }
 
 const config: Config = {
@@ -18,6 +20,8 @@ const config: Config = {
   jwtExpiration: process.env.JWT_EXPIRATION
     ? Number(process.env.JWT_EXPIRATION)
     : 86400,
+  arcjetKey: process.env.ARCJET_KEY || 'default_arcjet_key',
+  arcjetEnv: process.env.ARCJET_ENV || 'development',
 };
 
 export default config;
