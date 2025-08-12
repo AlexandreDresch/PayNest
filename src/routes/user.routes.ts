@@ -1,11 +1,14 @@
 import { Router } from 'express';
+
 import { UserController } from '../controllers/user.controller.js';
+
+import authorize from '../middlewares/auth.middleware.js';
 
 const userRouter = Router();
 
 userRouter.get('/', UserController.getUsers);
 
-userRouter.get('/:id', UserController.getUserById);
+userRouter.get('/:id', authorize, UserController.getUserById);
 
 userRouter.patch('/:id', (req, res) => {
   const userId = req.params.id;
