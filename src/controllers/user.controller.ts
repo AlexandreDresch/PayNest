@@ -35,7 +35,7 @@ export const UserController = {
           message: 'User not found!',
         });
       }
-      
+
       res.status(200).json({
         success: true,
         message: 'Fetched user successfully!',

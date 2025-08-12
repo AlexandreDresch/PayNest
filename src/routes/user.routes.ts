@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { get } from 'http';
-import { UserService } from '../services/user.service.js';
+import { UserController } from '../controllers/user.controller.js';
 
 const userRouter = Router();
 
-userRouter.get('/', UserService.getAllUsers);
+userRouter.get('/', UserController.getUsers);
 
-userRouter.get('/:id', UserService.getUserById);
+userRouter.get('/:id', UserController.getUserById);
 
 userRouter.patch('/:id', (req, res) => {
   const userId = req.params.id;

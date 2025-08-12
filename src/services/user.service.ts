@@ -2,7 +2,7 @@ import { UserRepository } from '../repositories/user.repository.js';
 
 export const UserService = {
   async getAllUsers() {
-    const users = UserRepository.findAllUsers();
+    const users = await UserRepository.findAllUsers();
 
     return users;
   },
