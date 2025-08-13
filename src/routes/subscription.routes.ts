@@ -1,13 +1,8 @@
-import { Router } from 'express';
+import { Router, type RequestHandler } from 'express';
+import authorize from '../middlewares/auth.middleware.js';
+import { SubscriptionController } from '../controllers/subscription.controller.js';
 
 const subscriptionRouter = Router();
-
-subscriptionRouter.get('/', (req, res) => {
-  res.status(200).send({
-    title: 'GET all subscriptions',
-    message: 'List of all subscriptions',
-  });
-});
 
 subscriptionRouter.get('/:id', (req, res) => {
   const subscriptionId = req.params.id;
@@ -17,13 +12,11 @@ subscriptionRouter.get('/:id', (req, res) => {
   });
 });
 
-subscriptionRouter.get('/user/:userId', (req, res) => {
-  const userId = req.params.userId;
-  res.status(200).send({
-    title: `GET subscriptions for user ${userId}`,
-    message: `List of subscriptions for user ${userId}`,
-  });
-});
+subscriptionRouter.get(
+  '/user/:userId',
+  authorize,
+  SubscriptionController.getSubscriptions as RequestHandler,
+);
 
 subscriptionRouter.get('/upcoming-renewals', (req, res) => {
   res.status(200).send({
@@ -32,12 +25,11 @@ subscriptionRouter.get('/upcoming-renewals', (req, res) => {
   });
 });
 
-subscriptionRouter.post('/', (req, res) => {
-  res.status(201).send({
-    title: 'Create Subscription',
-    message: 'Subscription created successfully!',
-  });
-});
+subscriptionRouter.post(
+  '/',
+  authorize,
+  SubscriptionController.createSubscription as RequestHandler,
+);
 
 subscriptionRouter.put('/:id', (req, res) => {
   const subscriptionId = req.params.id;
