@@ -2,6 +2,8 @@ import type { Response, NextFunction } from 'express';
 import { SubscriptionService } from '../services/subscription.service.js';
 
 import type { AuthenticatedRequest } from '../types/index.js';
+import { workflowClient } from '../config/upstash.js';
+import config from '../config/config.js';
 
 export const SubscriptionController = {
   async createSubscription(
@@ -14,6 +16,13 @@ export const SubscriptionController = {
         req.user._id,
         req.body,
       );
+
+      await workflowClient.trigger({
+        url: config.serverUrl + '/api/v1/workflows/subscription/reminder',
+        body: {
+          subscriptionId: result._id.toString(), // ✅ Send subscriptionId
+        },
+      });
 
       res.status(201).json({
         success: true,
@@ -40,9 +49,7 @@ export const SubscriptionController = {
         });
       }
 
-      const subscriptions = await SubscriptionService.getSubscriptions(
-        userId,
-      );
+      const subscriptions = await SubscriptionService.getSubscriptions(userId);
 
       res.status(200).json({
         success: true,
@@ -54,3 +61,4 @@ export const SubscriptionController = {
     }
   },
 };
+

@@ -6,3 +6,13 @@ export interface AuthenticatedRequest extends Request {
     email: string;
   };
 }
+
+interface WorkflowPayload {
+  subscriptionId: string;
+}
+
+export interface WorkflowContext {
+  requestPayload: WorkflowPayload;
+  run<T>(name: string, fn: () => Promise<T>): Promise<T>;
+  sleepUntil(label: string, date: Date): Promise<void>;
+}
