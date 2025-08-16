@@ -17,17 +17,17 @@ export const SubscriptionController = {
         req.body,
       );
 
-      await workflowClient.trigger({
+      const { workflowRunId } = await workflowClient.trigger({
         url: config.serverUrl + '/api/v1/workflows/subscription/reminder',
         body: {
-          subscriptionId: result._id.toString(), // ✅ Send subscriptionId
+          subscriptionId: result._id.toString(),
         },
       });
 
       res.status(201).json({
         success: true,
         message: 'Subscription created successfully!',
-        data: result,
+        data: { subscription: result, workflowRunId },
       });
     } catch (error) {
       next(error);
@@ -61,4 +61,3 @@ export const SubscriptionController = {
     }
   },
 };
-

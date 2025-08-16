@@ -14,6 +14,20 @@ export const SubscriptionRepository = {
     }
   },
 
+  async getById(
+    context: { run: (name: string, fn: () => Promise<any>) => Promise<any> },
+    id: string,
+  ) {
+    return await context.run('get subscription', async () => {
+      const sub = await Subscription.findById(id).populate({
+        path: 'user',
+        select: 'username email',
+        strictPopulate: false,
+      });
+      return sub || null;
+    });
+  },
+
   async getSubscriptionsByUserId(userId: string) {
     try {
       const subscriptions = await Subscription.find({ userId });
