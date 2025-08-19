@@ -8,4 +8,15 @@ export const UserRepository = {
   async findUserById(userId: string) {
     return await User.findById(userId).select('-password');
   },
+
+  async updateUser(userId: string, userData: any) {
+    return await User.findByIdAndUpdate(userId, userData, {
+      new: true,
+      runValidators: true,
+    }).select('-password');
+  },
+
+  async deleteUser(userId: string) {
+    return await User.findByIdAndDelete(userId);
+  },
 };

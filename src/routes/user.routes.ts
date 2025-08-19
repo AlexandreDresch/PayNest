@@ -10,20 +10,8 @@ userRouter.get('/', UserController.getUsers);
 
 userRouter.get('/:id', authorize, UserController.getUserById);
 
-userRouter.patch('/:id', (req, res) => {
-  const userId = req.params.id;
-  res.status(200).send({
-    title: `Update user ${userId}`,
-    message: `User ${userId} updated successfully!`,
-  });
-});
+userRouter.patch('/:id', authorize, UserController.updateUser);
 
-userRouter.delete('/:id', (req, res) => {
-  const userId = req.params.id;
-  res.status(200).send({
-    title: `Delete user ${userId}`,
-    message: `User ${userId} deleted successfully!`,
-  });
-});
+userRouter.delete('/:id', authorize, UserController.deleteUser);
 
 export default userRouter;
