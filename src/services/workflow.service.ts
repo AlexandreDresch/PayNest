@@ -5,16 +5,28 @@ import type { WorkflowContext } from '../types/index.js';
 import { SubscriptionRepository } from '../repositories/subscription.repository.js';
 
 import { ReminderService } from './reminder.service.js';
+import { sendReminderEmail } from '../utils/send-email.js';
 
 const REMINDERS = [7, 5, 2, 1];
 
 export const WorkflowService = {
   async triggerReminder(
-    context: { run: (label: string, fn: () => Promise<void>) => Promise<void> },
+    context: WorkflowContext,
     label: string,
   ): Promise<void> {
     return await context.run(label, async () => {
-      console.log(`Triggering ${label} reminder.`);
+      const subscription = await SubscriptionRepository.getById(
+        context,
+        context.requestPayload.subscriptionId,
+      );
+
+      await sendReminderEmail({
+        to: context.requestPayload.user.email,
+        type: label,
+        subscription,
+      }).catch((error) => {
+        console.error(`Failed to send reminder email for ${label}:`, error);
+      });
     });
   },
 
@@ -72,7 +84,6 @@ export const WorkflowService = {
       if (reminderDate.isAfter(dayjs())) {
         await ReminderService.scheduleReminder(
           context,
-          subscriptionId,
           daysBefore,
           reminderDate,
         );

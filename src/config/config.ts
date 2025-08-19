@@ -13,6 +13,9 @@ interface Config {
   arcjetEnv: string;
   qstashUrl: string;
   sqashToken: string;
+  emailPassword: string;
+  emailUser: string;
+  appUrl: string;
 }
 
 const config: Config = {
@@ -28,6 +31,9 @@ const config: Config = {
   arcjetEnv: process.env.ARCJET_ENV || 'development',
   qstashUrl: process.env.QSTASH_URL || 'https://qstash.upstash.io',
   sqashToken: process.env.QSTASH_TOKEN || 'default_qstash_token',
+  emailPassword: process.env.EMAIL_PASSWORD || 'default_email_password',
+  emailUser: process.env.EMAIL_USER || 'default_email_user',
+  appUrl: process.env.APP_URL || 'http://localhost:3000',
 };
 
 export default config;
