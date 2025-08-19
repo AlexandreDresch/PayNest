@@ -14,4 +14,8 @@ export const SubscriptionService = {
   async getSubscriptions(userId: string) {
     return SubscriptionRepository.getSubscriptionsByUserId(userId);
   },
+
+  async getSubscriptionById(subscriptionId: string) {
+    return SubscriptionRepository.getSubscriptionById(subscriptionId);
+  },
 };

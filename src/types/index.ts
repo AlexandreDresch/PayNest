@@ -7,8 +7,8 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
-interface WorkflowPayload {
-  subscriptionId: string;
+export interface SubscriptionParams {
+  id: string;
 }
 
 export interface WorkflowContext {

@@ -36,4 +36,13 @@ export const SubscriptionRepository = {
       throw new Error('Failed to fetch subscriptions: ' + error.message);
     }
   },
+
+  async getSubscriptionById(subscriptionId: string) {
+    try {
+      const subscription = await Subscription.findById(subscriptionId);
+      return subscription;
+    } catch (error: Error | any) {
+      throw new Error('Failed to fetch subscription: ' + error.message);
+    }
+  },
 };

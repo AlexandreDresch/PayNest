@@ -4,13 +4,11 @@ import { SubscriptionController } from '../controllers/subscription.controller.j
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.get('/:id', (req, res) => {
-  const subscriptionId = req.params.id;
-  res.status(200).send({
-    title: `GET subscription ${subscriptionId}`,
-    message: `Details of subscription ${subscriptionId}`,
-  });
-});
+subscriptionRouter.get(
+  '/:id',
+  authorize,
+  SubscriptionController.getSubscriptionById as RequestHandler,
+);
 
 subscriptionRouter.get(
   '/user/:userId',

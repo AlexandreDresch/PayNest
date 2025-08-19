@@ -1,7 +1,10 @@
-import type { Response, NextFunction } from 'express';
+import type { Response, NextFunction, Request } from 'express';
 import { SubscriptionService } from '../services/subscription.service.js';
 
-import type { AuthenticatedRequest } from '../types/index.js';
+import type {
+  AuthenticatedRequest,
+  SubscriptionParams,
+} from '../types/index.js';
 import { workflowClient } from '../config/upstash.js';
 import config from '../config/config.js';
 
@@ -55,6 +58,33 @@ export const SubscriptionController = {
         success: true,
         message: 'List of all subscriptions',
         data: subscriptions,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getSubscriptionById(
+    req: Request<SubscriptionParams> & AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const subscriptionId = req.params.id;
+      const subscription =
+        await SubscriptionService.getSubscriptionById(subscriptionId);
+
+      if (!subscription) {
+        return res.status(404).json({
+          success: false,
+          message: 'Subscription not found',
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: `Details of subscription ${subscriptionId}`,
+        data: subscription,
       });
     } catch (error) {
       next(error);
