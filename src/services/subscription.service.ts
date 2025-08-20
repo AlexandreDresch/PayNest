@@ -18,4 +18,27 @@ export const SubscriptionService = {
   async getSubscriptionById(subscriptionId: string) {
     return SubscriptionRepository.getSubscriptionById(subscriptionId);
   },
+
+  async getUpcomingRenewals(userId: string) {
+    return SubscriptionRepository.getUpcomingRenewals(userId);
+  },
+
+  async updateSubscription(
+    subscriptionId: string,
+    data: Partial<typeof Subscription>,
+  ) {
+    const subscription = await SubscriptionRepository.getById(
+      { run: async (_name, fn) => fn() },
+      subscriptionId,
+    );
+
+    if (!subscription) {
+      throw new Error('Subscription not found');
+    }
+
+    Object.assign(subscription, data);
+    await subscription.save();
+
+    return subscription;
+  },
 };

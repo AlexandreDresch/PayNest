@@ -16,12 +16,11 @@ subscriptionRouter.get(
   SubscriptionController.getSubscriptions as RequestHandler,
 );
 
-subscriptionRouter.get('/upcoming-renewals', (req, res) => {
-  res.status(200).send({
-    title: 'GET upcoming renewals',
-    message: 'List of subscriptions with upcoming renewals',
-  });
-});
+subscriptionRouter.get(
+  '/upcoming-renewals',
+  authorize,
+  SubscriptionController.getUpcomingRenewals as RequestHandler,
+);
 
 subscriptionRouter.post(
   '/',
@@ -29,13 +28,11 @@ subscriptionRouter.post(
   SubscriptionController.createSubscription as RequestHandler,
 );
 
-subscriptionRouter.put('/:id', (req, res) => {
-  const subscriptionId = req.params.id;
-  res.status(200).send({
-    title: `Update subscription ${subscriptionId}`,
-    message: `Subscription ${subscriptionId} updated successfully!`,
-  });
-});
+subscriptionRouter.put(
+  '/:id',
+  authorize,
+  SubscriptionController.updateSubscription as RequestHandler,
+);
 
 subscriptionRouter.put(':id/cancel', (req, res) => {
   const subscriptionId = req.params.id;

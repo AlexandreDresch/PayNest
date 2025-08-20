@@ -45,4 +45,17 @@ export const SubscriptionRepository = {
       throw new Error('Failed to fetch subscription: ' + error.message);
     }
   },
+
+  async getUpcomingRenewals(userId: string) {
+    try {
+      const subscriptions = await Subscription.find({
+        userId,
+        nextBillingDate: { $gte: new Date() },
+      }).sort({ nextBillingDate: 1 });
+
+      return subscriptions;
+    } catch (error: Error | any) {
+      throw new Error('Failed to fetch upcoming renewals: ' + error.message);
+    }
+  },
 };

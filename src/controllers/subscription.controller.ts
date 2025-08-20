@@ -90,4 +90,61 @@ export const SubscriptionController = {
       next(error);
     }
   },
+
+  async getUpcomingRenewals(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const upcomingRenewals = await SubscriptionService.getUpcomingRenewals(
+        req.user._id,
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Upcoming renewals retrieved successfully',
+        data: upcomingRenewals,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async updateSubscription(
+    req: Request<SubscriptionParams> & AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const subscriptionId = req.params.id;
+      const updatedData = req.body;
+
+      const updatedSubscription =
+        await SubscriptionService.getSubscriptionById(subscriptionId);
+
+      if (!updatedSubscription) {
+        return res.status(404).json({
+          success: false,
+          message: 'Subscription not found',
+        });
+      }
+
+      const result = await SubscriptionService.updateSubscription(
+        req.user._id,
+        {
+          ...updatedSubscription,
+          ...updatedData,
+        },
+      );
+
+      res.status(200).json({
+        success: true,
+        message: `Subscription ${subscriptionId} updated successfully!`,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
