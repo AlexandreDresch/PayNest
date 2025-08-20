@@ -58,4 +58,31 @@ export const SubscriptionRepository = {
       throw new Error('Failed to fetch upcoming renewals: ' + error.message);
     }
   },
+
+  async cancelSubscription(subscriptionId: string) {
+    try {
+      const subscription = await Subscription.findById(subscriptionId);
+      if (!subscription) {
+        throw new Error('Subscription not found');
+      }
+
+      subscription.status = 'cancelled';
+      await subscription.save();
+      return subscription;
+    } catch (error: Error | any) {
+      throw new Error('Failed to cancel subscription: ' + error.message);
+    }
+  },
+
+  async deleteSubscription(subscriptionId: string) {
+    try {
+      const result = await Subscription.findByIdAndDelete(subscriptionId);
+      if (!result) {
+        throw new Error('Subscription not found');
+      }
+      return result;
+    } catch (error: Error | any) {
+      throw new Error('Failed to delete subscription: ' + error.message);
+    }
+  },
 };

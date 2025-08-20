@@ -34,20 +34,16 @@ subscriptionRouter.put(
   SubscriptionController.updateSubscription as RequestHandler,
 );
 
-subscriptionRouter.put(':id/cancel', (req, res) => {
-  const subscriptionId = req.params.id;
-  res.status(200).send({
-    title: `Cancel subscription ${subscriptionId}`,
-    message: `Subscription ${subscriptionId} canceled successfully!`,
-  });
-});
+subscriptionRouter.put(
+  ':id/cancel',
+  authorize,
+  SubscriptionController.cancelSubscription as RequestHandler,
+);
 
-subscriptionRouter.delete('/:id', (req, res) => {
-  const subscriptionId = req.params.id;
-  res.status(200).send({
-    title: `Delete subscription ${subscriptionId}`,
-    message: `Subscription ${subscriptionId} deleted successfully!`,
-  });
-});
+subscriptionRouter.delete(
+  '/:id',
+  authorize,
+  SubscriptionController.deleteSubscription as RequestHandler,
+);
 
 export default subscriptionRouter;

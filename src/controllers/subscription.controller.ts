@@ -7,6 +7,7 @@ import type {
 } from '../types/index.js';
 import { workflowClient } from '../config/upstash.js';
 import config from '../config/config.js';
+import { SubscriptionRepository } from '../repositories/subscription.repository.js';
 
 export const SubscriptionController = {
   async createSubscription(
@@ -142,6 +143,56 @@ export const SubscriptionController = {
         success: true,
         message: `Subscription ${subscriptionId} updated successfully!`,
         data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async cancelSubscription(
+    req: Request<SubscriptionParams> & AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const subscriptionId = req.params.id;
+
+      const subscription =
+        await SubscriptionRepository.cancelSubscription(subscriptionId);
+
+      res.status(200).json({
+        success: true,
+        message: `Subscription ${subscriptionId} canceled successfully!`,
+        data: subscription,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async deleteSubscription(
+    req: Request<SubscriptionParams> & AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const subscriptionId = req.params.id;
+
+      const subscription =
+        await SubscriptionService.getSubscriptionById(subscriptionId);
+
+      if (!subscription) {
+        return res.status(404).json({
+          success: false,
+          message: 'Subscription not found',
+        });
+      }
+
+      await SubscriptionRepository.deleteSubscription(subscriptionId);
+
+      res.status(200).json({
+        success: true,
+        message: `Subscription ${subscriptionId} deleted successfully!`,
       });
     } catch (error) {
       next(error);
